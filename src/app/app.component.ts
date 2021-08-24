@@ -1,32 +1,76 @@
 import { Component } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CheckboxFormControl } from './components/checkbox-group/checkbox-form-control';
 
 @Component({
   selector: 'app-root',
   template: `
-    <!--The content below is only a placeholder and can be replaced.-->
-    <div style="text-align:center" class="content">
-      <h1>
-        Welcome to {{title}}!
-      </h1>
-      <span style="display: block">{{ title }} app is running!</span>
-      <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+    <div class="content">
+      <form [formGroup]="exampleForm">
+        <app-checkbox formControlName="singleCheckbox" name="single-checkbox"
+          >Single Checkbox</app-checkbox
+        >
+      </form>
+
+      <form [formGroup]="exampleTwo">
+        <app-checkbox-group
+          id="food-checkbox-group"
+          legend="Pick Your Favorite Food!"
+          [formGroup]="checkboxGroup"
+        >
+        </app-checkbox-group>
+      </form>
     </div>
-    <h2>Here are some links to help you start: </h2>
-    <ul>
-      <li>
-        <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-      </li>
-      <li>
-        <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-      </li>
-      <li>
-        <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-      </li>
-    </ul>
     <router-outlet></router-outlet>
   `,
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'angular-teaching-template';
+  favoriteFoods: CheckboxFormControl[] = [
+    {
+      label: 'Pizza',
+      id: 'pizza-checkbox',
+      name: 'pizza-checkbox',
+      checked: false,
+    },
+    {
+      label: 'Ice Cream',
+      id: 'ice-cream-checkbox',
+      name: 'ice-cream-checkbox',
+      checked: false,
+    },
+    {
+      label: 'Twinkies',
+      id: 'twinky-checkbox',
+      name: 'twinky-checkbox',
+      checked: false,
+    },
+  ];
+
+  constructor(private readonly fb: FormBuilder) {
+    console.log(this.buildFormArrayFromCheckboxConfig());
+  }
+
+  exampleForm: FormGroup = this.fb.group({
+    singleCheckbox: ['', Validators.required],
+  });
+
+  exampleTwo: FormGroup = this.fb.group({
+    checkboxGroup: this.fb.group({
+      foods: this.buildFormArrayFromCheckboxConfig(),
+    }),
+  });
+
+  get checkboxGroup(): FormGroup {
+    return this.exampleTwo.get('checkboxGroup') as FormGroup;
+  }
+
+  buildFormArrayFromCheckboxConfig(): FormArray {
+    const arr = this.favoriteFoods.map((food) => {
+      const {checked, validatorOptions, ...rest} = food;
+      return { ...rest, ...this.fb.control(checked, validatorOptions) };
+    });
+
+    return this.fb.array(arr);
+  }
 }

@@ -1,0 +1,34 @@
+.checkbox {
+  display: inline-block;
+  height: 24px;
+  aspect-ratio: 1 /1;
+  border-radius: 4px;
+  margin-right: 1rem;
+  cursor: pointer;
+  border: 1px solid #333;
+  background-color: #dadada;
+
+  &--checked {
+    background: no-repeat url('../../../assets/check.svg');
+    background-color: #3252e4;
+  }
+
+
+
+  &--error {
+    border: 2px solid red;
+  }
+}
+
+input[type=checkbox] {
+  display: none;
+}
+
+label {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  font-size: 1.25rem;
+}
