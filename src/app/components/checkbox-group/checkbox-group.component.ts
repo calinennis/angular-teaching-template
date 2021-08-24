@@ -27,9 +27,9 @@ export const CHECKBOX_GROUP_CONTROL_VALUE_ACCESSOR: any = {
       <ng-container *ngFor="let control of arrayControls ?? []; let i = index">
         <app-checkbox
           [formControl]="control"
-          [name]="arrayControls[i].value.name"
-          [id]="arrayControls[i].value.id"
-          >{{ "arrayControls[i].value.label }}</app-checkbox
+          [name]="arrayControls![i].value.name"
+          [id]="arrayControls![i].value.id"
+          >{{ arrayControls![i].value.label }}</app-checkbox
         >
       </ng-container>
     </fieldset>
